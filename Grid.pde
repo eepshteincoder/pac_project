@@ -19,9 +19,7 @@ class Grid {
         } 
       }
     }
-
-    data[5][10] = "3";
-  }//constr
+  }
 
   void draw() {
     for (int j=0; j < height/20; j++) {
