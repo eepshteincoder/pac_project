@@ -27,8 +27,6 @@ public class Sprite{
   }
   public void display(float x, float y){
      image(image, x, y, w, h); 
-     println(x);
-     println(y);
   }
   public void display(){
      image(image, center_x, center_y, w, h); 

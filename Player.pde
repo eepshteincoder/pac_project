@@ -31,7 +31,6 @@ class Player extends Sprite{
      { center_x += change_x; }
     if (3 == d) 
      { center_y += change_y; }
-     println("checking is_wall");
      if (grid.is_wall(center_x, center_y)) {
       center_x = px;
       center_y = py;

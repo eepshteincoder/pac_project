@@ -2,34 +2,38 @@ static float MOVE_SPEED = 2;
 static int stage = 1;
 final static float COIN_SCALE = 0.1;
 final static float TANK_SCALE = 0.28;
+final static float BALL_SCALE = 0.1;
 
 final static int NEUTRAL_FACING = 0; 
 final static int RIGHT_FACING = 1; 
 final static int LEFT_FACING = 2; 
 
 Grid grid;
-Player player;
+Player player, ball;
 PImage c;
 ArrayList<Sprite> coins; 
 int score = 0;
 boolean beat;
+boolean dead;
 int direction;
 
 void setup(){
   size(600, 600);
   imageMode(CENTER);
   player = new Player("tank.png", TANK_SCALE, width / 2, height / 2 + 100);
+  ball = new Player("ball.png", BALL_SCALE, 30, 30);
   c = loadImage("gold1.png");
   grid = new Grid();
   grid.load_level();
   beat = false;
+  dead = false;
   direction = 1;
   coins = new ArrayList<Sprite>();
   for(int i = 0; i < stage; i++){
     Coin coin = new Coin(c, COIN_SCALE);
     coin.center_x = (float)(Math.random()*width);
     coin.center_y = (float)(Math.random()*height);
-    while(grid.is_wall(coin.center_x, coin.center_y) && (coin.center_x != player.center_x) && (coin.center_y != player.center_y)){
+    while(grid.is_wall(coin.center_x, coin.center_y) || (coin.center_x == player.center_x) && (coin.center_y == player.center_y)){
       coin.center_x = (float)(Math.random() * width);
       coin.center_y = (float)(Math.random() * height);
     }
@@ -57,15 +61,28 @@ void draw(){
     player.center_y = height;
   }
   
+  for(Sprite coin: coins){    
+    coin.display();
+    ((AnimatedSprite)coin).updateAnimation();
+  }
+
   
   grid.draw();
   player.draw();
+  ball.draw();
   textSize(22);
   fill(255, 0, 0);
   text("Score: " + score, 30, 30);
   text("Speed: " + MOVE_SPEED, 30, 50);
-  
-  if(coins.size() == 0){
+  if(checkCollision(ball, player) && coins.size() > 0){
+    dead = true;
+    background(0);
+    textAlign(CENTER);
+    fill(255);
+    text("You lost", width / 2, height / 2 - 25);
+    text("Click enter to restart", width / 2, height / 2 + 25);
+  }
+  if(coins.size() == 0 && !dead){
     beat = true;
     background(0);
     fill(255);
@@ -94,11 +111,8 @@ void draw(){
     }
   }
 
-  // use for each loop to display coins
-  for(Sprite coin: coins){    
-    coin.display();
-    ((AnimatedSprite)coin).updateAnimation();
-  }
+  
+
   // call checkCollisionList and 
   // store the returned collision list(arraylist) of coin Sprites that collide with player.
   // if collision list not empty
@@ -141,6 +155,14 @@ public ArrayList<Sprite> checkCollisionList(Sprite s, ArrayList<Sprite> list){
 
 
 void keyPressed(){
+  if(dead){
+    if(keyCode == ENTER){
+      score = 0;
+      stage = 1;
+      MOVE_SPEED = 2;
+      setup(); 
+    }
+  }
   if(keyCode == RIGHT || keyCode == 'D'){
     player.change_x = MOVE_SPEED;
     player.change_y = 0;

@@ -1,18 +1,9 @@
 class Grid {
-
-  String[][] data = new String[30][30];
-
-  // constr 
+  String[][] data;
   Grid() {
-
+  data = new String[30][30];
     for (int j=0; j<30; j++) {
       for (int i=0; i<30; i++) {
-
-        /*data[j][i] = "2";
-
-        int a = int(random(4));
-        data[j][i] = str(a); // any*/
-
         // screen border
         if (0==i || 0==j || 29==i || 29==j) { 
           data[j][i] = "1"; // wall
@@ -53,30 +44,15 @@ class Grid {
   }
 
   void on_keyPressed() {
-    if (key == 's' ) { 
-      save_level();
-    }
     if (key == 'l' ) {
       load_level();
+      println("level loaded");
     }
   }
 
-  void save_level() {
-    String[] temp = new String[30];
-    int t = 0;
-    for (int j = 0; j < 30; j++) {
-      temp[j] = "";
-      for (int i = 0; i < 30; i++) {
-        temp[j] += data[j][i];
-      }
-    } 
-    saveStrings("world.txt", temp);
-    println("Level saved.");
-  }  
 
   void load_level() {
     String[] temp = loadStrings("world.txt");
-    //int t = 0;
     // Loading successful?
     if (temp!=null) {
       // success in loading 
